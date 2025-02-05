@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IGenericService.cs" />
+    <Compile Include="Abstract\IUsersService.cs" />
+    <Compile Include="Concrete\UsersManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserService.cs" />
   </ItemGroup>
@@ -56,6 +59,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyFinancialCrm.DataAccessLayer\MyFinancialCrm.DataAccessLayer.csproj">
+      <Project>{3d80de8c-d3da-44fc-96fc-0a1534d5905b}</Project>
+      <Name>MyFinancialCrm.DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyFinancialCrm.EntityLayer\MyFinancialCrm.EntityLayer.csproj">
       <Project>{cce9875b-7831-4f5b-a972-6f66aa143173}</Project>
       <Name>MyFinancialCrm.EntityLayer</Name>

@@ -161,8 +161,12 @@
       <Project>{22138583-3a89-4fe4-91f5-ce051df6c0fd}</Project>
       <Name>MyFinancialCrm.BusinessLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MyFinancialCrm.DataAccessLayer\MyFinancialCrm.DataAccessLayer.csproj">
+      <Project>{3d80de8c-d3da-44fc-96fc-0a1534d5905b}</Project>
+      <Name>MyFinancialCrm.DataAccessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyFinancialCrm.EntityLayer\MyFinancialCrm.EntityLayer.csproj">
-      <Project>{CCE9875B-7831-4F5B-A972-6F66AA143173}</Project>
+      <Project>{cce9875b-7831-4f5b-a972-6f66aa143173}</Project>
       <Name>MyFinancialCrm.EntityLayer</Name>
     </ProjectReference>
   </ItemGroup>

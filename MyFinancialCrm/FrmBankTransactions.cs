@@ -1,4 +1,4 @@
-﻿using MyFinancialCrm.EntityLayer.Context;
+﻿using MyFinancialCrm.DataAccessLayer.Context;
 using MyFinancialCrm.EntityLayer.Models;
 using System;
 using System.Collections.Generic;

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyFinancialCrm.EntityLayer.Context
+namespace MyFinancialCrm.DataAccessLayer.Context
 {
-    public class FinansalCrmContext : DbContext
+    public class FinansalCrmContext:DbContext
     {
         public FinansalCrmContext() : base("name=FinancialCrmDbEntities") { }
         public DbSet<Categories> Categories { get; set; }

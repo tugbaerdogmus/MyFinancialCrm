@@ -1,4 +1,6 @@
 ﻿using MyFinancialCrm.BusinessLayer;
+using MyFinancialCrm.BusinessLayer.Concrete;
+using MyFinancialCrm.DataAccessLayer.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,9 +16,11 @@ namespace MyFinancialCrm
     public partial class FrmLogin : Form
     {
         private UserService _userService = new UserService();
+        private UsersManager _userManager = new UsersManager(new EfUsersDal());
         public FrmLogin()
         {
             InitializeComponent();
+           // _userManager = new UsersManager();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -24,7 +28,7 @@ namespace MyFinancialCrm
             string userName=txtUserName.Text;
             string userPasword=txtUserPassword.Text;
 
-            if (_userService.ValidateUser(userName, userPasword))
+            if (_userManager.Login(userName, userPasword))
             {
                 MessageBox.Show("Giriş Başarılı!", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 FrmDashboard frmDashboard = new FrmDashboard();
