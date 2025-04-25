@@ -18,9 +18,15 @@ namespace MyFinancialCrm.BusinessLayer.Concrete
             _usersDal = uSersDal;
         }
 
-        public void TDelete(Users entity)
+        public void TDelete(int id)
         {
-            _usersDal.Delete(entity);
+            //_usersDal.Delete(id);
+
+            var entity = _usersDal.GetByID(id);
+            if (entity != null)
+            {
+                _usersDal.Delete(entity);
+            }
         }
 
         public List<Users> TGetAll()

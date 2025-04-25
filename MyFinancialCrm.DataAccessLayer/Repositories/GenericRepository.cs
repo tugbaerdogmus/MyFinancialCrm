@@ -32,6 +32,7 @@ namespace MyFinancialCrm.DataAccessLayer.Repositories
             var deletedEntity=context.Entry(entity);
             deletedEntity.State = EntityState.Deleted;
             context.SaveChanges();
+
         }
 
         public void Insert(T entity)
