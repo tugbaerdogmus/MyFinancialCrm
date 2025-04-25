@@ -1,0 +1,22 @@
+﻿using MyFinancialCrm.DataAccessLayer.Abstract;
+using MyFinancialCrm.DataAccessLayer.Repositories;
+using MyFinancialCrm.EntityLayer.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MyFinancialCrm.DataAccessLayer.EntityFramework
+{
+    public class EfBankProcessDal: GenericRepository<BankProcesses>, IBankProcessDal
+    {
+        public List<BankProcesses> GetProcessListWithBank()
+        {
+            using (var context = new FinancialCrmDbEntities())
+            {
+                return context.BankProcesses.Include("Banks").ToList();
+            }
+        }
+    }
+}

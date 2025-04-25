@@ -48,11 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IBankProcessService.cs" />
+    <Compile Include="Abstract\IBankService.cs" />
+    <Compile Include="Abstract\IBillsService.cs" />
     <Compile Include="Abstract\ICategoryService.cs" />
     <Compile Include="Abstract\IGenericService.cs" />
     <Compile Include="Abstract\ISpendingService.cs" />
     <Compile Include="Abstract\IUsersService.cs" />
+    <Compile Include="Concrete\BankProcessManager.cs" />
+    <Compile Include="Concrete\BillsManager.cs" />
     <Compile Include="Concrete\CategoriesManager.cs" />
+    <Compile Include="Concrete\BankManager.cs" />
     <Compile Include="Concrete\SpendingManager.cs" />
     <Compile Include="Concrete\UsersManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

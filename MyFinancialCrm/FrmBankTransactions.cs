@@ -1,4 +1,6 @@
-﻿using MyFinancialCrm.DataAccessLayer.Context;
+﻿using MyFinancialCrm.BusinessLayer.Concrete;
+using MyFinancialCrm.DataAccessLayer.Context;
+using MyFinancialCrm.DataAccessLayer.EntityFramework;
 using MyFinancialCrm.EntityLayer.Models;
 using System;
 using System.Collections.Generic;
@@ -15,25 +17,14 @@ namespace MyFinancialCrm
     public partial class FrmBankTransactions : Form
     {
         FinancialCrmDbEntities db = new FinancialCrmDbEntities();
+        private readonly SpendingManager _spendingManager = new SpendingManager(new EfSpendingDal());
+        private readonly CategoriesManager _categoryManager = new CategoriesManager(new EfCategoriesDal());
         public FrmBankTransactions()
         {
             InitializeComponent();
         }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
+     
+       
 
         private void FrmBankTransactions_Load(object sender, EventArgs e)
         {
@@ -41,8 +32,6 @@ namespace MyFinancialCrm
             CategoryList();
             cmbCategoryFilter.SelectedIndexChanged += cmbCategoryFilter_SelectedIndexChanged;
 
-            //using (db)
-            //{
             var query = from s in db.Spendings
                             join c in db.Categories on s.CategoryId equals c.CategoyId 
                             select new
@@ -54,29 +43,14 @@ namespace MyFinancialCrm
                             };
 
                 dataGridView1.DataSource = query.ToList();
-            //}
+
             var values = db.Bills.ToList();
             dataGridView2.DataSource = values;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            using (var context = new FinansalCrmContext())
-            {
-                var query = from h in context.Spendings
-                            join k in context.Categories on h.CategoryId equals k.CategoyId
-                            where k.CatogoryName.Contains(txtMetinFilter.Text) || h.SpendingTitle.Contains(txtMetinFilter.Text)
-                            orderby h.SpendingDate descending
-                            select new
-                            {
-                                Harcama = h.SpendingTitle,
-                                HarcamaTarihi = h.SpendingDate,
-                                HarcamaMiktari = h.SpendingAmount,
-                                KategoriAdi = k.CatogoryName
-                            };
-
-                dataGridView1.DataSource = query.ToList();
-            }
+            FilterSpendingsByText();
         }
 
         private void cmbCategoryFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -87,18 +61,22 @@ namespace MyFinancialCrm
                 return; // Seçim yapılmadıysa çık
 
             // ComboBox’tan seçilen değeri int olarak al
-            int selectedKategoriId = cmbCategoryFilter.SelectedValue as int? ?? 0;
+            FilterSpendingsByCategory();
+        }
+        void FilterSpendingsByCategory()
+        {
+                int selectedKategoriId = cmbCategoryFilter.SelectedValue as int? ?? 0;
 
-                var query = from h in db.Spendings
-                            join k in db.Categories on h.CategoryId equals k.CategoyId
-                            orderby h.SpendingDate descending
-                            select new
-                            {
-                                Harcama = h.SpendingTitle,
-                                HarcamaTarihi = h.SpendingDate,
-                                HarcamaMiktari = h.SpendingAmount,
-                                KategoriAdi = k.CatogoryName
-                            };
+        var query = from h in db.Spendings
+                    join k in db.Categories on h.CategoryId equals k.CategoyId
+                    orderby h.SpendingDate descending
+                    select new
+                    {
+                        Harcama = h.SpendingTitle,
+                        HarcamaTarihi = h.SpendingDate,
+                        HarcamaMiktari = h.SpendingAmount,
+                        KategoriAdi = k.CatogoryName
+                    };
 
                 // Eğer "Tümü" seçili değilse, belirli kategoriye göre filtrele
                 if (selectedKategoriId > 0)
@@ -106,9 +84,27 @@ namespace MyFinancialCrm
                     query = query.Where(h => h.KategoriAdi == cmbCategoryFilter.Text);
                 }
 
-                dataGridView1.DataSource = query.ToList();
+    dataGridView1.DataSource = query.ToList();
         }
-        private void CategoryList()
+        void FilterSpendingsByText()
+        {
+            using (var context = new FinansalCrmContext())
+            {
+
+                var filtered = _spendingManager.GetSpendingListWithCategory()
+              .Where(s => s.Categories.CatogoryName.Contains(txtMetinFilter.Text) || s.SpendingTitle.Contains(txtMetinFilter.Text))
+              .Select(s => new
+              {
+                  s.SpendingTitle,
+                  s.SpendingDate,
+                  s.SpendingAmount,
+                  CategoryName = s.Categories != null ? s.Categories.CatogoryName : "Kategori Yok"
+              })
+              .ToList();
+                dataGridView1.DataSource = filtered.ToList();
+            }
+        }
+        private void CategoryList1()
         {
             var categories = db.Categories.ToList();
             categories.Insert(0, new Categories { CategoyId = 0, CatogoryName = "Tümü" });
@@ -116,7 +112,27 @@ namespace MyFinancialCrm
             cmbCategoryFilter.DisplayMember = "CatogoryName";
             cmbCategoryFilter.ValueMember = "CategoyId";
         }
+        void CategoryList()
+        {
+            cmbCategoryFilter.DataSource = _categoryManager.TGetAll();
+            cmbCategoryFilter.DisplayMember = "CatogoryName";
+            cmbCategoryFilter.ValueMember = "CategoyId";
+        }
+        void SpendingList()
+        {
+            var values = _spendingManager.GetSpendingListWithCategory()
+                .Select(s => new
+                {
+                    s.SpendingId,
+                    s.CategoryId,
+                    s.SpendingDate,
+                    s.SpendingAmount,
+                    s.SpendingTitle,
+                    CategoryName = s.Categories != null ? s.Categories.CatogoryName : "Kategori Yok"
+                }).ToList();
 
+            dataGridView1.DataSource = values;
+        }
         private void cmbBillsFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -136,7 +152,21 @@ namespace MyFinancialCrm
 
                 dataGridView2.DataSource = query.ToList();
         }
+        #region butonlar
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
 
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             FrmCategories frm = new FrmCategories();
@@ -183,5 +213,6 @@ namespace MyFinancialCrm
             frm.Show();
             this.Close();
         }
+        #endregion
     }
 }

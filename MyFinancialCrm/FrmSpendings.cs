@@ -140,7 +140,7 @@ namespace MyFinancialCrm
             int id = int.Parse(txtHarcamaId.Text);
             var entity = _spendingManager.TGetById(id);
             _spendingManager.TDelete(id);
-            MessageBox.Show("Silindi");
+            MessageBox.Show("Harcama Başarılı Bir Şekilde Silindi", "Giderler", MessageBoxButtons.OK, MessageBoxIcon.Information);
             SpendingList();
         }
 
@@ -179,7 +179,8 @@ namespace MyFinancialCrm
             sp.CategoryId = Convert.ToInt32(cmbCategory.SelectedValue);
 
             _spendingManager.TUpdate(sp);
-            MessageBox.Show("Güncellendi");
+            MessageBox.Show("Harcama Başarılı Bir Şekilde Güncellendi", "Giderler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             SpendingList();
         }
         #region butonlar

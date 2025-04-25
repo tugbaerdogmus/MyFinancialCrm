@@ -1,4 +1,6 @@
-﻿using MyFinancialCrm.EntityLayer.Models;
+﻿using MyFinancialCrm.BusinessLayer.Concrete;
+using MyFinancialCrm.DataAccessLayer.EntityFramework;
+using MyFinancialCrm.EntityLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,34 +20,39 @@ namespace MyFinancialCrm
             InitializeComponent();
         }
         FinancialCrmDbEntities db = new FinancialCrmDbEntities();
+        private UsersManager _userManager = new UsersManager(new EfUsersDal());
         private void FrmSettings_Load(object sender, EventArgs e)
         {
-            var values = db.Users.ToList();
+            //var values = db.Users.ToList();
+            //dataGridView1.DataSource = values;
+
+            var values = _userManager.TGetAll();
             dataGridView1.DataSource = values;
         }
         private void btnOdemeList_Click(object sender, EventArgs e)
         {
-            var values = db.Users.ToList();
+            var values = _userManager.TGetAll();
             dataGridView1.DataSource = values;
         }
 
         private void btnGuncelleme_Click(object sender, EventArgs e)
         {
-            string userName = txtUserName.Text;
-            string userPassword = txtUserSifre.Text;
+            //string userName = txtUserName.Text;
+            //string userPassword = txtUserSifre.Text;
             int id = int.Parse(txtUserId.Text);
 
-            var values = db.Users.Find(id);
+            var sp = _userManager.TGetById(id);
+            sp.Username = txtUserName.Text;
+            sp.Password = txtUserSifre.Text;
+            _userManager.TUpdate(sp);
 
-            values.Username = userName;
-            values.Password = userPassword;
-            db.SaveChanges();
             MessageBox.Show("Kullanıcı Başarılı Bir Şekilde Güncellendi", "Kullanıcılar", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            var values2 = db.Users.ToList();
+            var values2 = _userManager.TGetAll();
             dataGridView1.DataSource = values2;
         }
 
+        #region butonlar
         private void button1_Click(object sender, EventArgs e)
         {
             FrmCategories frm = new FrmCategories();
@@ -92,5 +99,6 @@ namespace MyFinancialCrm
         {
             Environment.Exit(0);
         }
+        #endregion
     }
 }

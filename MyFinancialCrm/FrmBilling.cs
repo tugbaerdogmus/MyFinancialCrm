@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using MyFinancialCrm.BusinessLayer.Concrete;
+using MyFinancialCrm.DataAccessLayer.EntityFramework;
+using MyFinancialCrm.EntityLayer.Models;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -7,12 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MyFinancialCrm.EntityLayer.Models;
 
 namespace MyFinancialCrm
 {
     public partial class FrmBilling : Form
     {
+        private BillsManager _billManager = new BillsManager(new EfBillsDal());
+
         public FrmBilling()
         {
             InitializeComponent();
@@ -21,13 +25,13 @@ namespace MyFinancialCrm
 
         private void FrmBilling_Load(object sender, EventArgs e)
         {
-            var values = db.Bills.ToList();
+            var values = _billManager.TGetAll();
             dataGridView1.DataSource = values;
         }
 
         private void btnOdemeList_Click(object sender, EventArgs e)
         {
-            var values = db.Bills.ToList();
+            var values = _billManager.TGetAll();
             dataGridView1.DataSource = values;
         }
 
@@ -37,24 +41,24 @@ namespace MyFinancialCrm
             decimal amount = decimal.Parse(txtOdemeMiktar.Text);
             string period = txtPeriyot.Text;
 
-            Bills bills = new Bills();
-            bills.BillTitle=title;
-            bills.BillAmount=amount;
-            bills.BillPeriod=period;
-            db.Bills.Add(bills);
-            db.SaveChanges();
+            Bills veri = new Bills
+            {
+                BillTitle = txtOdemeBaslik.Text,
+                BillAmount = decimal.Parse(txtOdemeMiktar.Text),
+                BillPeriod = txtPeriyot.Text
+            };
+            _billManager.TInsert(veri);
             MessageBox.Show("Ödeme Başarılı Bir Şekilde Eklendi", "Ödeme & Faturalar", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            var values = db.Bills.ToList();
+            var values = _billManager.TGetAll();
             dataGridView1.DataSource = values;
         }
 
         private void btnOdemeSil_Click(object sender, EventArgs e)
         {
             int id = int.Parse(txtOdemeId.Text);
-            var removeValue = db.Bills.Find(id);
-            db.Bills.Remove(removeValue);
-            db.SaveChanges();
+            var entity = _billManager.TGetById(id);
+            _billManager.TDelete(id);
             MessageBox.Show("Ödeme Başarılı Bir Şekilde Silindi", "Ödeme & Faturalar", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             var values = db.Bills.ToList();
@@ -76,10 +80,18 @@ namespace MyFinancialCrm
             db.SaveChanges();
             MessageBox.Show("Ödeme Başarılı Bir Şekilde Güncellendi", "Ödeme & Faturalar", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            var values2 = db.Bills.ToList();
+            var veri = _billManager.TGetById(id);
+            veri.BillTitle = txtOdemeBaslik.Text;
+            veri.BillAmount = decimal.Parse(txtOdemeMiktar.Text);
+            veri.BillPeriod = txtPeriyot.Text;
+
+
+            _billManager.TUpdate(veri);
+            var values2 = _billManager.TGetAll();
             dataGridView1.DataSource = values2;
         }
 
+        #region butonlar 
         private void button6_Click(object sender, EventArgs e)
         {
             FrmDashboard frm = new FrmDashboard();
@@ -130,5 +142,6 @@ namespace MyFinancialCrm
         {
             Environment.Exit(0);
         }
+        #endregion 
     }
 }

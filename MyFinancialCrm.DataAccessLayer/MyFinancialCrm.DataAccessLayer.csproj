@@ -48,11 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IBankDal.cs" />
+    <Compile Include="Abstract\IBankProcessDal.cs" />
+    <Compile Include="Abstract\IBillsDal.cs" />
     <Compile Include="Abstract\ICategoriesDal.cs" />
     <Compile Include="Abstract\IGenericDal.cs" />
     <Compile Include="Abstract\ISpendingDal.cs" />
     <Compile Include="Abstract\IUsersDal.cs" />
     <Compile Include="Context\FinansalCrmContext.cs" />
+    <Compile Include="EntityFramework\EfBankDal.cs" />
+    <Compile Include="EntityFramework\EfBankProcessDal.cs" />
+    <Compile Include="EntityFramework\EfBillsDal.cs" />
     <Compile Include="EntityFramework\EfCategoriesDal.cs" />
     <Compile Include="EntityFramework\EfSpendingDal.cs" />
     <Compile Include="EntityFramework\EfUsersDal.cs" />
