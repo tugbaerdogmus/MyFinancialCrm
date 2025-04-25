@@ -1,0 +1,1 @@
+Eğitim kampının son case olan bu uygulama da basit düzeyde dinansal crm uygulaması yapıldı. Uygulama da banka hareketlerini, çeşitli sorgulara ait grafikleri yaptık. Katmanlı mimari örneği olan proje kullanıcı işlemlerini buna uygun olarak yaptım. 
